@@ -92,7 +92,7 @@ const updateNotificationById = async (id, data, avatarLocalPath) => {
     if (data.description) updateData.description = data.description;
     if (data.userIds) updateData.userIds = data.userIds;
     if (data.productId) updateData.productId = data.productId;
-    if (data.restaurantId) updateData.restaurantId = data.restaurantId;
+    if (data.storeId) updateData.storeId = data.storeId;
 
     const updatedNotification = await Notification.findByIdAndUpdate(id, updateData, { new: true });
     if (!updatedNotification) {

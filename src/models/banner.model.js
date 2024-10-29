@@ -8,9 +8,9 @@ const bannerSchema = new Schema(
       type: String,
       required: true,
     },
-    restaurantId: {
+    storeId: {
       type: Schema.Types.ObjectId,
-      ref: 'Restaurant',
+      ref: 'Store',
       required: false, // Optional field
     },
     productId: {
@@ -20,8 +20,8 @@ const bannerSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['Active', 'Block'],
-      required: true, // 'Active' or 'Block' must be provided
+      enum: ['Active', 'Blocked'],
+      required: true, // 'Active' or 'Blocked' must be provided
     },
     isDeleted: {
       type: Boolean,

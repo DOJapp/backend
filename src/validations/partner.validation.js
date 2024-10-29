@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
-// Schema for creating a new admin
-const createAdmin = Joi.object({
+// Schema for creating a new partner
+const createPartner = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
@@ -12,8 +12,8 @@ const createAdmin = Joi.object({
     panNo: Joi.string().required(),
 });
 
-// Schema for updating an existing admin
-const updateAdmin = Joi.object({
+// Schema for updating an existing partner
+const updatePartner = Joi.object({
     name: Joi.string().optional(),
     email: Joi.string().email().optional(),
     password: Joi.string().min(6).optional(),
@@ -25,23 +25,23 @@ const updateAdmin = Joi.object({
     panNo: Joi.string().optional(),
 });
 
-// Schema for fetching an admin by ID
-const getAdminById = Joi.object({
+// Schema for fetching a partner by ID
+const getPartnerById = Joi.object({
     id: Joi.string().required(), // Assuming ID is a string (like ObjectId)
 });
 
-// Schema for soft deleting an admin by ID
-const softDeleteAdminById = Joi.object({
+// Schema for soft deleting a partner by ID
+const softDeletePartnerById = Joi.object({
     id: Joi.string().required(), // Assuming ID is a string
 });
 
-// Schema for admin login
-const adminLogin = Joi.object({
+// Schema for partner login
+const partnerLogin = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
 });
 
-// Schema for changing admin password
+// Schema for changing partner password
 const changePassword = {
     body: Joi.object().keys({
         currentPassword: Joi.string().required(),
@@ -50,10 +50,10 @@ const changePassword = {
 };
 
 export {
-    createAdmin,
-    updateAdmin,
-    getAdminById,
-    softDeleteAdminById,
-    adminLogin,
+    createPartner,
+    updatePartner,
+    getPartnerById,
+    softDeletePartnerById,
+    partnerLogin,
     changePassword,
 };

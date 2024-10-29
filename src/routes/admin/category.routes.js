@@ -17,7 +17,7 @@ router.get("/category/:id", verifyJWT, validate(categoryValidation.getCategoryBy
 router.post("/category", verifyJWT, upload.single("image"), validate(categoryValidation.createCategory), CategoryController.createCategory);
 
 // Route to update an existing category (PUT) 
-router.put("/category/:id", verifyJWT, upload.single("image"), validate(categoryValidation.updateCategoryById), CategoryController.updateCategoryById);
+router.put("/category/:id", verifyJWT, upload.single("image"),  CategoryController.updateCategoryById);
 
 // Route to soft delete a category by ID (DELETE)
 router.delete("/category/:id", verifyJWT, validate(categoryValidation.softDeleteCategoryById), CategoryController.softDeleteCategoryById);

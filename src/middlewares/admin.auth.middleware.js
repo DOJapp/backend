@@ -21,5 +21,5 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     }
 
     req.admin = admin;
-    next()
+    next();
 })

@@ -13,7 +13,7 @@ const createNotification = {
         description: Joi.string().required(), // Required field
         userId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
         productId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
-        restaurantId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
+        storeId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
         image: Joi.string().optional(), // Optional field for image URL
     }),
 };
@@ -28,7 +28,7 @@ const updateNotificationById = {
         description: Joi.string().required(), // Optional field
         userId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
         productId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
-        restaurantId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
+        storeId: Joi.string().optional().hex().length(24), // Optional and must be a valid ObjectId
     }),
 };
 

@@ -52,7 +52,7 @@ const productsSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Blocked'], // Corrected 'Block' to 'Blocked'
+            enum: ['Active', 'Blocked'], // Corrected 'Blocked' to 'Blocked'
             required: true,
         },
         isDeleted: {

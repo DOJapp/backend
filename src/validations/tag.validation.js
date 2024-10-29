@@ -5,7 +5,7 @@ import Joi from 'joi';
 const createCategory = {
     body: Joi.object().keys({
         title: Joi.string().min(3).max(100).required(),  // Optional, but must meet length requirements
-        status: Joi.string().valid('Active', 'Block').required(),  // Valid status values
+        status: Joi.string().valid('Active', 'Blocked').required(),  // Valid status values
         // Image will be handled via multer, so we do not validate it here in Joi
     }),
 };
@@ -26,7 +26,7 @@ const updateCategoryById = {
     }),
     body: Joi.object().keys({
         title: Joi.string().min(3).max(100).required(),  // Optional, but must meet length requirements
-        status: Joi.string().valid('Active', 'Block').optional(),  // Valid status values
+        status: Joi.string().valid('Active', 'Blocked').optional(),  // Valid status values
         // Image will be handled via multer, so we do not validate it here in Joi
     }),
 };

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as notificationController from "../../controllers/restaurant/notification.controller.js";
+import * as notificationController from "../../controllers/store/notification.controller.js";
 import { upload } from "../../middlewares/multer.middleware.js";
 import * as notificationValidation from '../../validations/notification.validation.js';
 import validate from "../../middlewares/validate.js";

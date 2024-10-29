@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { upload } from "../../middlewares/multer.middleware.js";
 import * as userNotificationValidation from '../../validations/user.notification.validation.js';
-import * as userNotificationController from "../../controllers/restaurant/user.notification.controller.js"; // Ensure the path is correct
+import * as userNotificationController from "../../controllers/store/user.notification.controller.js"; // Ensure the path is correct
 import validate from "../../middlewares/validate.js";
 import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensure the path is correct
 

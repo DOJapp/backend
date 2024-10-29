@@ -50,7 +50,7 @@ const voucherSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Block', 'Redeemed', 'Expired'],
+            enum: ['Active', 'Blocked', 'Redeemed', 'Expired'],
             default: 'Active', // Default status when a voucher is created
         },
         expiryDate: {

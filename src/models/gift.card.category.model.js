@@ -20,7 +20,7 @@ const giftCardCategorySchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Block'],
+            enum: ['Active', 'Blocked'],
             required: true,
         },
         isDeleted: {

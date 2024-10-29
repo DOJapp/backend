@@ -10,7 +10,7 @@ const createProduct = {
         quantity: Joi.number().required().min(0),
         price: Joi.number().required().min(0),
         discount: Joi.number().optional().min(0),
-        status: Joi.string().valid('Active', 'Block').required(),
+        status: Joi.string().valid('Active', 'Blocked').required(),
     }),
 };
 
@@ -34,7 +34,7 @@ const updateProductById = {
         quantity: Joi.number().optional().min(0),
         price: Joi.number().optional().min(0),
         discount: Joi.number().optional().min(0),
-        status: Joi.string().valid('Active', 'Block').optional(),
+        status: Joi.string().valid('Active', 'Blocked').optional(),
     }),
 };
 

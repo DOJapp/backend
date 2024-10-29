@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
-const categorySchema = new Schema(
+const storeCategorySchema = new Schema(
     {
         title: {
             type: String,
@@ -20,10 +20,6 @@ const categorySchema = new Schema(
             ref: 'Admin',
             default: null,
         },
-        image: {
-            type: String,
-            required: true,
-        },
         status: {
             type: String,
             enum: ['Active', 'Blocked'],
@@ -34,10 +30,10 @@ const categorySchema = new Schema(
             default: false,
         },
     },
-    { collection: 'Category', timestamps: true }
+    { collection: 'StoreCategory', timestamps: true }
 );
 
-categorySchema.pre('save', function (next) {
+storeCategorySchema.pre('save', function (next) {
     if (this.isNew || this.isModified('title')) {
         this.title = this.title.charAt(0).toUpperCase() + this.title.slice(1);
     }
@@ -50,11 +46,11 @@ const filterDeleted = function (next) {
     next();
 };
 
-categorySchema.pre('find', filterDeleted);
-categorySchema.pre('findOne', filterDeleted);
-categorySchema.pre('findOneAndUpdate', filterDeleted);
-categorySchema.pre('findByIdAndUpdate', filterDeleted);
+storeCategorySchema.pre('find', filterDeleted);
+storeCategorySchema.pre('findOne', filterDeleted);
+storeCategorySchema.pre('findOneAndUpdate', filterDeleted);
+storeCategorySchema.pre('findByIdAndUpdate', filterDeleted);
 
-const Category = model('Category', categorySchema);
+const StoreCategory = model('StoreCategory', storeCategorySchema);
 
-export default Category;
+export default StoreCategory;

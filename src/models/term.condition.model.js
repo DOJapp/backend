@@ -11,7 +11,7 @@ const termConditionSchema = new Schema(
         page: {
             type: String,
             required: true,
-            enum: ['User', 'Admin'] // Admin as Restaurant
+            enum: ['User', 'Admin'] // Admin as store
         },
         description: {
             type: String,
@@ -19,7 +19,7 @@ const termConditionSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Block'],
+            enum: ['Active', 'Blocked'],
             default: 'Active'
         },
         isDeleted: {

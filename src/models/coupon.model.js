@@ -50,7 +50,7 @@ const couponsSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Block', 'Redeemed', 'Expired'],
+            enum: ['Active', 'Blocked', 'Redeemed', 'Expired'],
             default: 'Active', // Default status when a coupon is created
         },
         expiryDate: {

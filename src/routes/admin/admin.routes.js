@@ -16,10 +16,45 @@ router.get("/admin/", verifyJWT, AdminController.getAllAdmins);
 router.get("/admin/:id", verifyJWT, validate(adminValidation.getAdminById), AdminController.getAdminById);
 
 // Route to create a new admin (POST)
-router.post("/admin", verifyJWT, upload.single("image"), AdminController.createAdmin);
+router.post("/admin",   upload.fields([
+    {
+        name: "avatar",
+        maxCount: 1
+    }, 
+    {
+        name: "aadharFrontImage",
+        maxCount: 1
+    },
+    {
+        name: "aadharBackImage",
+        maxCount: 1
+    },
+    {
+        name: "panImage",
+        maxCount: 1
+    }
+]), validate(adminValidation.createAdmin),AdminController.createAdmin);
+
 
 // Route to update an existing admin (PUT)
-router.put("/admin/:id", verifyJWT, upload.single("image"), AdminController.updateAdminById);
+router.put("/admin/:id", verifyJWT, upload.fields([
+    {
+        name: "avatar",
+        maxCount: 1
+    }, 
+    {
+        name: "aadharFrontImage",
+        maxCount: 1
+    },
+    {
+        name: "aadharBackImage",
+        maxCount: 1
+    },
+    {
+        name: "panImage",
+        maxCount: 1
+    }
+]),validate(adminValidation.updateAdmin), AdminController.updateAdminById);
 
 // Route to soft delete an admin by ID (DELETE)
 router.delete("/admin/:id", verifyJWT, validate(adminValidation.softDeleteAdminById), AdminController.softDeleteAdminById);

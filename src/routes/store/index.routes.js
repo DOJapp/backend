@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import restaurantRouter from "./restaurant.routes.js";
+import storeRouter from "./store.routes.js";
 import productRouter from "./product.routes.js";
 import notificationRoute from "./notification.routes.js";
 import userNotificationRoute from "./user.notification.routes.js";
@@ -16,6 +16,6 @@ router.use("/", notificationRoute);
 router.use("/", userNotificationRoute);
 router.use("/", couponRoute);
 router.use("/", voucherRoute);
-router.use("/", restaurantRouter);
+// router.use("/", storeRouter);
 
 export default router;

@@ -1,4 +1,4 @@
-import * as UserNotificationService from '../../services/restaurant/user.notification.service.js';
+import * as UserNotificationService from '../../services/store/user.notification.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

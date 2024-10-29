@@ -10,22 +10,18 @@ dotenv.config({ path: './.env' });
 // Get the number of available CPU cores
 const numCPUs = os.cpus().length;
 
-// Check if the current process is the master process
 if (cluster.isMaster) {
     console.log(`⚙️ Master process ${process.pid} is running`);
 
-    // Fork workers for each CPU core
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
 
-    // Listen for workers exiting
     cluster.on('exit', (worker, code, signal) => {
         console.log(`⚙️ Worker ${worker.process.pid} exited. Forking a new worker...`);
-        cluster.fork(); // Fork a new worker when one exits
+        cluster.fork();
     });
 } else {
-    // Worker processes - run the app
     connectDB()
         .then(() => {
             app.listen(process.env.PORT || 8000, () => {
@@ -33,6 +29,18 @@ if (cluster.isMaster) {
             });
         })
         .catch((err) => {
-            console.log('MONGO db connection failed !!!', err);
+            console.error('MONGO DB connection failed:', err);
+            process.exit(1);
         });
+
+    // Add error handling for uncaught exceptions and unhandled rejections
+    process.on('uncaughtException', (err) => {
+        console.error('Uncaught Exception:', err);
+        process.exit(1);
+    });
+
+    process.on('unhandledRejection', (err) => {
+        console.error('Unhandled Rejection:', err);
+        process.exit(1);
+    });
 }

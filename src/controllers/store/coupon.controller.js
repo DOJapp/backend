@@ -1,4 +1,4 @@
-import * as CouponsService from '../../services/restaurant/coupon.service.js';
+import * as CouponsService from '../../services/store/coupon.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

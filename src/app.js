@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from './routes/users/index.routes.js'; 
 import adminRouter from './routes/admin/index.routes.js'; 
-import restaurantRouter from './routes/restaurant/index.routes.js'; 
+import storeRouter from './routes/store/index.routes.js'; 
 import logger from './utils/logger.js';  
 import helmet from "helmet";
 
@@ -45,7 +45,7 @@ app.use("/api/v1/users", userRouter);
 
 
 // Mount the user routes at /api/v1
-app.use("/api/v1/restaurants", restaurantRouter);
+app.use("/api/v1/store", storeRouter);
 
 
 // Mount the user routes at /api/v1

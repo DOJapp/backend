@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as voucherController from "../../controllers/restaurant/voucher.controller.js";
+import * as voucherController from "../../controllers/store/voucher.controller.js";
 import * as voucherValidation from '../../validations/voucher.validation.js';
 import validate from "../../middlewares/validate.js";
 import { verifyJWT } from "../../middlewares/admin.auth.middleware.js";

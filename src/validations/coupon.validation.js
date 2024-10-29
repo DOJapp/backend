@@ -9,7 +9,7 @@ const createCoupon = {
         discountType: Joi.string().valid('Percentage', 'Fixed').required(), // Added discountType
         usagePerUser: Joi.number().integer().min(0).required(), // Added usagePerUser
         minOrderValue: Joi.number().positive().required(), // Added minOrderValue
-        status: Joi.string().valid('Active', 'Block', 'Redeemed', 'Expired').optional(),
+        status: Joi.string().valid('Active', 'Blocked', 'Redeemed', 'Expired').optional(),
         expiryDate: Joi.date().optional(), // Optional expiryDate for creation
     }),
 };
@@ -40,7 +40,7 @@ const updateById = {
         discountType: Joi.string().valid('Percentage', 'Fixed').optional(), // Added discountType
         usagePerUser: Joi.number().integer().min(0).optional(), // Added usagePerUser
         minOrderValue: Joi.number().positive().optional(), // Added minOrderValue
-        status: Joi.string().valid('Active', 'Block', 'Redeemed', 'Expired').optional(),
+        status: Joi.string().valid('Active', 'Blocked', 'Redeemed', 'Expired').optional(),
     }),
 };
 

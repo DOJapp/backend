@@ -5,16 +5,46 @@ import { ApiResponse } from '../../utils/ApiResponse.js';
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 // Create a new Admin
+// const createAdmin = asyncHandler(async (req, res) => {
+//     const avatarLocalPath = req.files?.avatar[0]?.path;
+//     if (!avatarLocalPath) {
+//         throw new ApiError(httpStatus.BAD_REQUEST, "Avatar file is required");
+//     }
+
+//     const aadharFrontImageLocalPath = req.files?.aadharFrontImage[0]?.path;
+//     if (!aadharFrontImageLocalPath) {
+//         throw new ApiError(httpStatus.BAD_REQUEST, "Aadhar Front Image is required");
+//     }
+
+//     const aadharBackImageLocalPath = req.files?.aadharBackImage[0]?.path;
+//     if (!aadharBackImageLocalPath) {
+//         throw new ApiError(httpStatus.BAD_REQUEST, "Aadhar Back Image is required");
+//     }
+//     const panImageLocalPath = req.files?.panImage[0]?.path;
+//     if (!panImageLocalPath) {
+//         throw new ApiError(httpStatus.BAD_REQUEST, "Pan Card Image file is required");
+//     }
+
+//     // Create the Admin with form data and image
+//     const newAdmin = await AdminService.createAdmin(req, avatarLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, panImageLocalPath);
+
+
+//     return res.status(httpStatus.CREATED).json(
+//         new ApiResponse(httpStatus.CREATED, newAdmin, "Admin created successfully")
+//     );
+// });
+
 const createAdmin = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path; // Get the path of the uploaded file (if any)
-    // Validate if avatar image is provided
-    if (!avatarLocalPath) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Image file is missing");
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    const aadharFrontImageLocalPath = req.files?.aadharFrontImage[0]?.path;
+    const aadharBackImageLocalPath = req.files?.aadharBackImage[0]?.path;
+    const panImageLocalPath = req.files?.panImage[0]?.path;
+
+    if (!avatarLocalPath || !aadharFrontImageLocalPath || !aadharBackImageLocalPath || !panImageLocalPath) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "All required image files must be uploaded");
     }
 
-    // Create the Admin with form data and image
-    const newAdmin = await AdminService.createAdmin(req, avatarLocalPath);
-
+    const newAdmin = await AdminService.createAdmin(req, avatarLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, panImageLocalPath);
 
     return res.status(httpStatus.CREATED).json(
         new ApiResponse(httpStatus.CREATED, newAdmin, "Admin created successfully")
@@ -45,18 +75,21 @@ const getAdminById = asyncHandler(async (req, res) => {
 
 // Update an Admin by ID
 const updateAdminById = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path; // Get the path of the uploaded file (if any)
+    const avatarLocalPath = req.files?.avatar?.[0]?.path; // Use optional chaining safely
+    const aadharFrontImageLocalPath = req.files?.aadharFrontImage?.[0]?.path;
+    const aadharBackImageLocalPath = req.files?.aadharBackImage?.[0]?.path;
+    const panImageLocalPath = req.files?.panImage?.[0]?.path;
 
-    // Merge the update data, including the image if provided
-    const updatedAdmin = await AdminService.updateAdminById(req.params.id, {
-        ...req.body,
-        avatar: avatarLocalPath || req.body.avatar // Update avatar if a new image is provided
-    });
 
+    // Call the service to update the admin
+    const updatedAdmin = await AdminService.updateAdminById(req.params.id, req.body,avatarLocalPath,aadharFrontImageLocalPath,aadharBackImageLocalPath,panImageLocalPath);
+
+    // Check if the admin was found and updated
     if (!updatedAdmin) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found');
     }
 
+    // Respond with the updated admin information
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, updatedAdmin, "Admin updated successfully")
     );

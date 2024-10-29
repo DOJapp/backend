@@ -28,20 +28,9 @@ const createCategory = asyncHandler(async (req, res) => {
 
 // Fetching all Categories
 const getAllCategories = asyncHandler(async (req, res) => {
-    // Check if categories are cached and valid
-    if (isCacheValid('categories')) {
-        const cachedCategories = getCache('categories');
-        return res.status(httpStatus.OK).json(
-            new ApiResponse(httpStatus.OK, cachedCategories, "Categories fetched successfully")
-        );
-    }
-
     // If not cached, fetch from the service
     const categories = await CategoryService.getAllCategories();
-    
-    // Store fetched data in cache
-    setCache('categories', categories);
-
+  
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, categories, "Categories fetched successfully")
     );

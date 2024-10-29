@@ -1,4 +1,4 @@
-import * as ProductService from '../../services/restaurant/product.service.js';
+import * as ProductService from '../../services/store/product.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

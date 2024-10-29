@@ -63,7 +63,7 @@ const redeem = async (giftCardCode, pin, userId) => {
     }
 
     // Check the status of the gift card
-    if (giftCard.status == 'Block') {
+    if (giftCard.status == 'Blocked') {
         throw new ApiError(httpStatus.BAD_REQUEST, "Gift card is not active.");
     }
 

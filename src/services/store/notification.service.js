@@ -46,7 +46,7 @@ const getAllNotifications = async () => {
     return await Notification.find({});
 };
 
-// Function to fetch all notifications By Restaurant Admin (excluding deleted)
+// Function to fetch all notifications By store Admin (excluding deleted)
 const getAllNotificationsByAdmin = async (req) => {
     const adminId = req?.admin?._id;
     return await Notification.find({ adminId: adminId });
@@ -77,7 +77,7 @@ const updateNotificationById = async (id, data, avatarLocalPath) => {
         updateData.image = image.url;
     }
 
-    // Update title, description, userIds, productId, restaurantId as needed
+    // Update title, description, userIds, productId, storeId as needed
     if (data.title) {
         updateData.title = data.title;
     }
@@ -90,8 +90,8 @@ const updateNotificationById = async (id, data, avatarLocalPath) => {
     if (data.productId) {
         updateData.productId = data.productId;
     }
-    if (data.restaurantId) {
-        updateData.restaurantId = data.restaurantId;
+    if (data.storeId) {
+        updateData.storeId = data.storeId;
     }
 
     // Update the notification with the new data

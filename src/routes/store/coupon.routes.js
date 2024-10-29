@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as couponController from "../../controllers/restaurant/coupon.controller.js"; // Updated from giftCardController
+import * as couponController from "../../controllers/store/coupon.controller.js"; // Updated from giftCardController
 import * as couponValidation from '../../validations/coupon.validation.js'; // Updated from giftCardValidation
 import validate from "../../middlewares/validate.js";
 import { verifyJWT } from "../../middlewares/admin.auth.middleware.js";

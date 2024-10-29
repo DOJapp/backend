@@ -15,7 +15,7 @@ const softDeleteAdminById = Joi.object({
 });
 
 // Schema for admin login
-const restaurantLogin = Joi.object({
+const storeLogin = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
 });
@@ -30,6 +30,7 @@ const changePassword = {
 
 export {
     getById,
-    restaurantLogin,
+    storeLogin,
     changePassword,
+    softDeleteAdminById
 };

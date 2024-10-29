@@ -1,4 +1,4 @@
-import * as NotificationService from '../../services/restaurant/notification.service.js';
+import * as NotificationService from '../../services/store/notification.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
@@ -33,7 +33,7 @@ const getAllNotifications = asyncHandler(async (req, res) => {
         new ApiResponse(httpStatus.OK, notifications, "Notifications fetched successfully")
     );
 });
-// Fetching all  Notifications By Restaurant
+// Fetching all  Notifications By store
 const getAllNotificationsByAdmin = asyncHandler(async (req, res) => {
     const notifications = await NotificationService.getAllNotificationsByAdmin(req); // Changed variable name to plural
 

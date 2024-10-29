@@ -5,7 +5,7 @@ const createGiftCardCategory = {
     body: Joi.object().keys({
         name: Joi.string().min(3).max(100).required(),  // Name is required and must meet length requirements
         description: Joi.string().max(500).optional(),  // Description is optional, max length 500
-        status: Joi.string().valid('Active', 'Block').required(),  // Valid status values ('Active', 'Block')
+        status: Joi.string().valid('Active', 'Blocked').required(),  // Valid status values ('Active', 'Blocked')
     }),
 };
 
@@ -24,7 +24,7 @@ const updateCategoryById = {
     body: Joi.object().keys({
         name: Joi.string().min(3).max(100).optional(),  // Name is optional but must meet length requirements if provided
         description: Joi.string().max(500).optional(),  // Description is optional, max length 500
-        status: Joi.string().valid('Active', 'Block').optional(),  // Status is optional but must be 'Active' or 'Block' if provided
+        status: Joi.string().valid('Active', 'Blocked').optional(),  // Status is optional but must be 'Active' or 'Blocked' if provided
     }),
 };
 
