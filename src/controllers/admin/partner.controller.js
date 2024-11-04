@@ -16,30 +16,30 @@ const getAllPartners = asyncHandler(async (req, res) => {
 });
 
 const createPartner = asyncHandler(async (req, res) => {
-  console.log(req.files);
+  console.log("files", req.files);
   console.log(req.body);
-  const panImageLocalPath = req.files?.panImage[0]?.path;
-  const aadharFrontImageLocalPath = req.files?.aadharFrontImage[0]?.path;
-  const aadharBackImageLocalPath = req.files?.aadharBackImage[0]?.path;
-  const documentImagesLocalPath = req.files?.documentImages[0]?.path;
+  // const panImageLocalPath = req.files?.panImage[0]?.path;
+  // const aadharFrontImageLocalPath = req.files?.aadharFrontImage[0]?.path;
+  // const aadharBackImageLocalPath = req.files?.aadharBackImage[0]?.path;
+  // const documentImagesLocalPath = req.files?.documentImages[0]?.path;
 
-  if (
-    !panImageLocalPath ||
-    !aadharFrontImageLocalPath ||
-    !aadharBackImageLocalPath 
-  ) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      "All required image files must be uploaded"
-    );
-  }
+  // if (
+  //   !panImageLocalPath ||
+  //   !aadharFrontImageLocalPath ||
+  //   !aadharBackImageLocalPath 
+  // ) {
+  //   throw new ApiError(
+  //     httpStatus.BAD_REQUEST,
+  //     "All required image files must be uploaded"
+  //   );
+  // }
 
   const newPartner = await PartnerService.createPartner(
     req,
-    panImageLocalPath,
-    aadharFrontImageLocalPath,
-    aadharBackImageLocalPath,
-    documentImagesLocalPath
+    // panImageLocalPath,
+    // aadharFrontImageLocalPath,
+    // aadharBackImageLocalPath,
+    // documentImagesLocalPath ||[]
   );
 
   return res

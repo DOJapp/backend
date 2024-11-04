@@ -2,30 +2,36 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-// Define a sub-schema for bank details
-const bankDetailsSchema = new mongoose.Schema({
-  bankName: String,
-  accountNo: String,
-  ifscCode: String,
-  accountHolderName: String,
-  accountType: String,
-});
-
-// Define a sub-schema for personal identification details (common fields)
-const personalDetailsSchema = new mongoose.Schema({
-  panNo: { type: String, required: true },
-  panImage: { type: String, required: true },
-  aadharNo: { type: String, required: true },
-  aadharFrontImage: { type: String, required: true },
-  aadharBackImage: { type: String, required: true },
-});
-
-
 // Define a sub-schema for partner details
 const partnerDetailsSchema = new mongoose.Schema({
-  noOfPartner: String,
-  bankDetails: bankDetailsSchema,
+  panNumber: {
+    type: Number,
+  },
+  panImage: {
+    type: String,
+  },
+  aadharNumber: {
+    type: Number,
+  },
+  aadharFrontImage: {
+    type: String,
+  },
+  aadharBackImage: {
+    type: String,
+  },
   document: [String],
+  bankName: {
+    type: String,
+  },
+  accountNumber: {
+    type: String,
+  },
+  ifscCode: {
+    type: String,
+  },
+  accountHolderName: {
+    type: String,
+  },
 });
 
 // Main admin schema
@@ -33,23 +39,21 @@ const adminSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
+      required: false,
       trim: true,
       lowercase: true,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     phone: {
       type: String,
-      required: true,
-      unique: true,
+      required: false,
       validate: {
         validator: (value) => /^\d{10}$/.test(value),
         message: "Invalid mobile number",
@@ -80,26 +84,69 @@ const adminSchema = new mongoose.Schema(
       type: String,
       default: "default.png",
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
     gst: {
       type: String,
       enum: ["Yes", "No"],
       default: "No",
     },
+    panNumber: {
+      type: String,
+    },
+    panImage: {
+      type: String,
+    },
+    aadharNumber: {
+      type: String,
+    },
+    aadharFrontImage: {
+      type: String,
+    },
+    aadharBackImage: {
+      type: String,
+    },
+    firmName: {
+      type: String,
+    },
+    gstNumber: {
+      type: String,
+    },
+    cinNumber:{
+      type:String,
+    },
+    firmAddress: {
+      type: String,
+    },
+    composition: {
+      type: String,
+    },
+    bankName: {
+      type: String,
+    },
+    accountNo: {
+      type: String,
+    },
+    ifscCode: {
+      type: String,
+    },
+    accountHolderName: {
+      type: String,
+    },
+    accountType: {
+      type: String,
+    },
+    documents: [String],
     firmType: {
       type: String,
-      enum: ["Propriter", "Partnership", "LLP", "PVT LTD", "Limited"],
+      enum: ["Proprietor", "Partnership", "LLP", "PVT LTD", "Limited"],
     },
-   
+    partners: [partnerDetailsSchema],
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { collection: "Admin", timestamps: true }
 );
-
-
-
 
 // Hash password before saving
 adminSchema.pre("save", async function (next) {
@@ -149,4 +196,3 @@ adminSchema.pre("findOneAndUpdate", filterDeleted);
 adminSchema.pre("findByIdAndUpdate", filterDeleted);
 
 export const Admin = mongoose.model("Admin", adminSchema);
-export const WithoutGst = mongoose.model("WithoutGst", withoutGstSchema);
