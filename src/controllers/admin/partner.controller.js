@@ -16,16 +16,17 @@ const getAllPartners = asyncHandler(async (req, res) => {
 });
 
 const createPartner = asyncHandler(async (req, res) => {
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  console.log(req.files);
+  console.log(req.body);
+  const panImageLocalPath = req.files?.panImage[0]?.path;
   const aadharFrontImageLocalPath = req.files?.aadharFrontImage[0]?.path;
   const aadharBackImageLocalPath = req.files?.aadharBackImage[0]?.path;
-  const panImageLocalPath = req.files?.panImage[0]?.path;
+  const documentImagesLocalPath = req.files?.documentImages[0]?.path;
 
   if (
-    !avatarLocalPath ||
+    !panImageLocalPath ||
     !aadharFrontImageLocalPath ||
-    !aadharBackImageLocalPath ||
-    !panImageLocalPath
+    !aadharBackImageLocalPath 
   ) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
@@ -35,10 +36,10 @@ const createPartner = asyncHandler(async (req, res) => {
 
   const newPartner = await PartnerService.createPartner(
     req,
-    avatarLocalPath,
+    panImageLocalPath,
     aadharFrontImageLocalPath,
     aadharBackImageLocalPath,
-    panImageLocalPath
+    documentImagesLocalPath
   );
 
   return res

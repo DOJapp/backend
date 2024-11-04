@@ -6,46 +6,37 @@ import bcrypt from "bcrypt"
 import { generateAdminAccessAndRefreshTokens } from "../../utils/tokenUtils.js";
 
 // Helper function to check for email or phone uniqueness
-const checkUniqueFields = async (email, phone, excludeId = null) => {
-    const emailExists = await Admin.findOne({ email, _id: { $ne: excludeId } });
-    if (emailExists) {
-        throw new ApiError(httpStatus.CONFLICT, 'Email is already taken');
+const checkUniqueFields = async (panNumber, phone, excludeId = null) => {
+    const panNumberExists = await Admin.findOne({ panNumber, _id: { $ne: excludeId } });
+    if (panNumberExists) {
+        throw new ApiError(httpStatus.CONFLICT, 'Pan Number is already taken');
     }
-    const phoneExists = await Admin.findOne({ phone, _id: { $ne: excludeId } });
-    if (phoneExists) {
-        throw new ApiError(httpStatus.CONFLICT, 'Phone number is already taken');
-    }
+   
 };
 
-const createPartner = async (req, avatarLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, panImageLocalPath) => {
-    const { name, email, password, phone, secondaryPhone, aadharNo, panNo, gst, firmType, roleId, gstDetails, partnerDetails } = req.body;
+const createPartner = async (req, panImageLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, documentImagesLocalPath) => {
+    const { gstSelected, panNumber, aadharNumber, firmName, firmAddress, bankName,accountNumber,ifscCode,accountHolderName } = req.body;
     const addedBy = req?.user?._id ?? null;
 
     // Check if email or phone already exists
-    await checkUniqueFields(email, phone);
+    await checkUniqueFields(panNumber);
 
     // Upload images to Cloudinary
-    const avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : null;
+    const panImage = panImageLocalPath ? await uploadOnCloudinary(panImageLocalPath) : null;
     const aadharFrontImage = aadharFrontImageLocalPath ? await uploadOnCloudinary(aadharFrontImageLocalPath) : null;
     const aadharBackImage = aadharBackImageLocalPath ? await uploadOnCloudinary(aadharBackImageLocalPath) : null;
-    const panImage = panImageLocalPath ? await uploadOnCloudinary(panImageLocalPath) : null;
+    const documents = documentImagesLocalPath ? await uploadOnCloudinary(documentImagesLocalPath) : null;
 
     // Ensure uploads were successful
-    if (avatarLocalPath && !avatar?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading avatar');
+    if (panImage && !panImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Pan Image');
     if (aadharFrontImageLocalPath && !aadharFrontImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Aadhar Front Image');
     if (aadharBackImageLocalPath && !aadharBackImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Aadhar Back Image');
-    if (panImageLocalPath && !panImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Pan Card Image');
+    if (documents && !documents?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Documents Image');
 
     // Initialize main partner data object
     const partnerData = {
-        name,
-        email,
-        password,
-        phone,
-        roleId,
-        secondaryPhone,
-        aadharNo,
-        panNo,
+        gst:gstSelected,
+      
         gst,
         firmType,
         avatar: avatar?.url || 'default.png',
@@ -55,51 +46,7 @@ const createPartner = async (req, avatarLocalPath, aadharFrontImageLocalPath, aa
         addedBy,
     };
 
-    // Conditional setup based on GST and firm type
-    if (gst === "Yes") {
-        if (gstDetails) {
-            partnerData.gstDetails = gstDetails;
-        } else {
-            throw new ApiError(httpStatus.BAD_REQUEST, "GST details are required when GST is 'Yes'");
-        }
-    }
-
-    // Populate firm-specific details based on firmType
-    switch (firmType) {
-        case "Propriter":
-            partnerData.propriterDetails = {
-                bankDetails: req.body.bankDetails,
-                panNo,
-                panImage: partnerData.panImage,
-                aadharNo,
-                aadharFrontImage: partnerData.aadharFrontImage,
-                aadharBackImage: partnerData.aadharBackImage,
-            };
-            break;
-
-        case "Partnership":
-        case "LLP":
-        case "PVT LTD":
-        case "Limited":
-            const partnerSchemaKey = firmType.toLowerCase() + "Details";
-            partnerData[partnerSchemaKey] = {
-                panNo,
-                panImage: partnerData.panImage,
-                aadharNo,
-                aadharFrontImage: partnerData.aadharFrontImage,
-                aadharBackImage: partnerData.aadharBackImage,
-                bankDetails: req.body.bankDetails,
-                partnerDetails: partnerDetails || {},
-            };
-            if (firmType !== "Partnership") {
-                partnerData[partnerSchemaKey].cinNo = req.body.cinNo || null;
-            }
-            break;
-
-        default:
-            throw new ApiError(httpStatus.BAD_REQUEST, "Invalid firm type");
-    }
-
+   
     const newPartner = new Admin(partnerData);
 
     return await newPartner.save();
