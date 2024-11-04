@@ -19,7 +19,7 @@ const checkUniqueFields = async (email, phone, excludeId = null) => {
 
 
 const createAdmin = async (req, avatarLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, panImageLocalPath) => {
-    const { name, email, password, phone, secondaryPhone, aadharNo, panNo, gst, firmType, roleId, gstDetails, partnerDetails } = req.body;
+    const { name, email, password, phone, secondaryPhone, aadharNo, panNo, gst, firmType, roleId, firmName, firmAddress,bankDetails, composition, partnerDetails } = req.body;
     const addedBy = req?.user?._id ?? null;
 
     // Check if email or phone already exists
@@ -37,123 +37,46 @@ const createAdmin = async (req, avatarLocalPath, aadharFrontImageLocalPath, aadh
     if (aadharBackImageLocalPath && !aadharBackImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Aadhar Back Image');
     if (panImageLocalPath && !panImage?.url) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error uploading Pan Card Image');
 
-    // Initialize main admin data object
+    // Initialize admin data object
     const adminData = {
         name,
         email,
         password,
         phone,
-        roleId,
         secondaryPhone,
+        roleId,
         aadharNo,
         panNo,
         gst,
         firmType,
+        firmName,
+        firmAddress,
+        composition,
         avatar: avatar?.url || 'default.png',
-        aadharFrontImage: aadharFrontImage?.url,
-        aadharBackImage: aadharBackImage?.url,
-        panImage: panImage?.url,
+        document: req.body.document || [],
         addedBy,
     };
 
-    // Conditional setup based on GST and firm type
-    if (gst === "Yes") {
-        // Populate GST details if GST is "Yes"
-        if (gstDetails) {
-            adminData.gstDetails = gstDetails;
-        } else {
-            throw new ApiError(httpStatus.BAD_REQUEST, "GST details are required when GST is 'Yes'");
-        }
-    }
-
-    // Populate firm-specific details based on firmType
-    switch (firmType) {
-        case "Propriter":
-            adminData.propriterDetails = {
-                bankDetails: req.body.bankDetails, // assuming bank details are in req.body
-                panNo,
-                panImage: adminData.panImage,
-                aadharNo,
-                aadharFrontImage: adminData.aadharFrontImage,
-                aadharBackImage: adminData.aadharBackImage,
-            };
-            break;
-
-        case "Partnership":
-        case "LLP":
-        case "PVT LTD":
-        case "Limited":
-            const partnerSchemaKey = firmType.toLowerCase() + "Details";
-            adminData[partnerSchemaKey] = {
-                panNo,
-                panImage: adminData.panImage,
-                aadharNo,
-                aadharFrontImage: adminData.aadharFrontImage,
-                aadharBackImage: adminData.aadharBackImage,
-                bankDetails: req.body.bankDetails,
-                partnerDetails: partnerDetails || {},
-            };
-            if (firmType !== "Partnership") {
-                adminData[partnerSchemaKey].cinNo = req.body.cinNo || null;
-            }
-            break;
-
-        default:
-            throw new ApiError(httpStatus.BAD_REQUEST, "Invalid firm type");
+    // Add partner details if firmType is partnership-based
+    if (["Partnership", "LLP", "PVT LTD", "Limited"].includes(firmType) && partnerDetails) {
+        adminData.partnerDetails = partnerDetails.map(async (partner) => ({
+            panNo: partner.panNo,
+            panImage: partner.panImage ? await uploadOnCloudinary(partner.panImage).url : null,
+            aadharNo: partner.aadharNo,
+            aadharFront: partner.aadharFront ? await uploadOnCloudinary(partner.aadharFront).url : null,
+            aadharBack: partner.aadharBack ? await uploadOnCloudinary(partner.aadharBack).url : null,
+            document: partner.document || [],
+            bankName: partner.bankName,
+            accountNo: partner.accountNo,
+            ifscCode: partner.ifscCode,
+            accountHolderName: partner.accountHolderName,
+            accountType: partner.accountType,
+        }));
     }
 
     const newAdmin = new Admin(adminData);
-
     return await newAdmin.save();
 };
-
-
-
-// const createAdmin = async (req, avatarLocalPath, aadharFrontImageLocalPath, aadharBackImageLocalPath, panImageLocalPath) => {
-//     const { name, email, password, phone,secondaryPhone,aadharNo,panNo,gst,firmType, roleId } = req.body;
-//     const addedBy = req?.user?._id ?? null;
-
-//     await checkUniqueFields(email, phone);
-
-//     const avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : null;
-//     if (avatarLocalPath && !avatar?.url) {
-//         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error while uploading avatar');
-//     }
-
-//     const aadharFrontImage = aadharFrontImageLocalPath ? await uploadOnCloudinary(aadharFrontImageLocalPath) : null;
-//     const aadharBackImage = aadharBackImageLocalPath ? await uploadOnCloudinary(aadharBackImageLocalPath) : null;
-//     const panImage = panImageLocalPath ? await uploadOnCloudinary(panImageLocalPath) : null;
-
-//     if (aadharFrontImageLocalPath && !aadharFrontImage?.url) {
-//         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error while uploading Aadhar Front Image');
-//     }
-//     if (aadharBackImageLocalPath && !aadharBackImage?.url) {
-//         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error while uploading Aadhar Back Image');
-//     }
-//     if (panImageLocalPath && !panImage?.url) {
-//         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Error while uploading Pan Card Image');
-//     }
-
-//     const adminData = {
-//         name,
-//         email,
-//         password,
-//         phone,
-//         roleId,
-//         secondaryPhone,aadharNo,panNo,
-//         avatar: avatar?.url || 'default.png', 
-//         aadharFrontImage: aadharFrontImage?.url || null, 
-//         aadharBackImage: aadharBackImage?.url || null, 
-//         panImage: panImage?.url || null, 
-//         addedBy,
-//     };
-
-//     const newAdmin = new Admin(adminData);
-
-//     return await newAdmin.save();
-// };
-
-
 
 
 // Function to fetch all Admins (excluding deleted)
@@ -267,7 +190,7 @@ const softDeleteAdminById = async (id) => {
 
 const adminLogin = async (email, password) => {
     // Find the admin by email
-    const admin = await Admin.findOne({email});
+    const admin = await Admin.findOne({ email });
 
     // Check if the admin exists
     if (!admin) {

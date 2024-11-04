@@ -128,3 +128,8 @@
 2024-10-28 14:07:16 [INFO]: GET /api/v1/admin/partners/671cba205c5bf2047399081a
 2024-10-28 14:07:28 [INFO]: GET /api/v1/admin/partners/671cba205c5bf2047399081a
 2024-10-28 16:55:08 [INFO]: GET /api/v1/admin/get_dashboard
+2024-10-30 12:35:07 [INFO]: GET /api/v1/admin/get_dashboard
+2024-10-30 12:39:02 [INFO]: POST /api/v1/admin/login
+2024-10-30 12:49:48 [INFO]: POST /api/v1/admin/login
+2024-10-30 12:49:50 [INFO]: GET /api/v1/admin/get_dashboard
+2024-10-30 12:50:00 [INFO]: GET /api/v1/admin/partners

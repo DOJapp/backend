@@ -6,6 +6,7 @@ import validate from "../../middlewares/validate.js";
 import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensure the path is correct
 
 const router = Router();
+
 // Route for changing admin password
 router.put("/admin/change_password", verifyJWT, validate(adminValidation.changePassword), AdminController.changeAdminPassword);
 
