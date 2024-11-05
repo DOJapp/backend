@@ -23,13 +23,17 @@ const convertBlobToFile = async (blobUrl) => {
     console.log("file", file);
     return file;
 };
+
 const createPartner = async (req) => {
-    console.log(req.body);
     const {
         gstSelected,
         gstNumber,
         firmType,
-        composition,
+        gstType,
+        compositonType,
+        cessType,
+        goodsServiceType,
+        percentage,
         cinNumber,
         panNumber,
         aadharNumber,
@@ -43,8 +47,24 @@ const createPartner = async (req) => {
         aadharFrontImage,
         aadharBackImage,
         documentImages,
-        partners, // Array of partner objects
+        partners,
     } = req.body;
+
+    if (!gstSelected) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "GST selection is required");
+    }
+
+    if (!firmName) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Frim Name is required");
+    }
+
+    if (!firmAddress) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Frim Address is required");
+    }
+
+    if (!panNumber) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Pan Number is required");
+    }
 
     // Check if PAN number already exists
     await checkUniqueFields(panNumber);
@@ -81,21 +101,27 @@ const createPartner = async (req) => {
     if (aadharBackImageUrl && !aadharBackImageUrl?.url)
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Error uploading Aadhar Back Image");
 
-    // Prepare partner details
-    console.log("partners",partners);
-    const formattedPartners = (partners || []).map(async (partner) => ({
-        panNumber: partner.panNumber,
-        panImage: partner.panImage ? await uploadOnCloudinary(partner.panImage) : null,
-        aadharNumber: partner.aadharNumber,
-        aadharFrontImage: partner.aadharFrontImage ? await uploadOnCloudinary(partner.aadharFrontImage) : null,
-        aadharBackImage: partner.aadharBackImage ? await uploadOnCloudinary(partner.aadharBackImage) : null,
-        document: partner.document || [],
-        bankName: partner.bankName,
-        accountNumber: partner.accountNumber,
-        ifscCode: partner.ifscCode,
-        accountHolderName: partner.accountHolderName,
+
+    const formattedPartners = await Promise.all((partners || []).map(async (partner) => {
+        const panImageUpload = partner.panImage ? await uploadOnCloudinary(partner.panImage) : null;
+        const aadharFrontImageUpload = partner.aadharFrontImage ? await uploadOnCloudinary(partner.aadharFrontImage) : null;
+        const aadharBackImageUpload = partner.aadharBackImage ? await uploadOnCloudinary(partner.aadharBackImage) : null;
+
+        return {
+            panNumber: partner.panNumber,
+            panImage: panImageUpload ? panImageUpload.url : null,
+            aadharNumber: partner.aadharNumber,
+            aadharFrontImage: aadharFrontImageUpload ? aadharFrontImageUpload.url : null,
+            aadharBackImage: aadharBackImageUpload ? aadharBackImageUpload.url : null,
+            document: partner.document || [],
+            bankName: partner.bankName,
+            accountNumber: partner.accountNumber,
+            ifscCode: partner.ifscCode,
+            accountHolderName: partner.accountHolderName,
+        };
     }));
-console.log("formattedPartners",formattedPartners)
+
+    console.log("formattedPartners", formattedPartners)
     // Construct main partner data
     const partnerData = {
         gst: gstSelected,
@@ -104,7 +130,11 @@ console.log("formattedPartners",formattedPartners)
         firmAddress,
         gstNumber: gstSelected === "Yes" ? gstNumber : null,
         firmType: gstSelected === "Yes" ? firmType : null,
-        composition: gstSelected === "Yes" ? composition : null,
+        gstType,
+        compositonType,
+        cessType,
+        goodsServiceType,
+        percentage,
         cinNumber: gstSelected === "Yes" ? cinNumber : null,
         panNumber,
         panImage: panImageUrl?.url,

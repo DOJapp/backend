@@ -5,13 +5,13 @@ import bcrypt from "bcrypt";
 // Define a sub-schema for partner details
 const partnerDetailsSchema = new mongoose.Schema({
   panNumber: {
-    type: Number,
+    type: String,
   },
   panImage: {
     type: String,
   },
   aadharNumber: {
-    type: Number,
+    type: String,
   },
   aadharFrontImage: {
     type: String,
@@ -91,6 +91,8 @@ const adminSchema = new mongoose.Schema(
     },
     panNumber: {
       type: String,
+      minlength: [10, 'PAN Number must be exactly 10 characters'],
+      maxlength: [10, 'PAN Number must be exactly 10 characters'],
     },
     panImage: {
       type: String,
@@ -110,13 +112,25 @@ const adminSchema = new mongoose.Schema(
     gstNumber: {
       type: String,
     },
-    cinNumber:{
-      type:String,
+    cinNumber: {
+      type: String,
     },
     firmAddress: {
       type: String,
     },
-    composition: {
+    gstType: {
+      type: String, 
+    },
+    compositonType: {
+      type: String,
+    },
+    cessType: {
+      type: String,
+    },
+    goodsServiceType: {
+      type: String,
+    },
+    percentage: {
       type: String,
     },
     bankName: {
