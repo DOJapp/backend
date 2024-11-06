@@ -60,23 +60,18 @@ const updateFirmDetailsById = {
     }),
 };
 
+
 const updateBankDetailsById = {
     params: Joi.object({
         id: Joi.string().hex().length(24).required(),
     }),
     body: Joi.object({
-        panNumber: Joi.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).optional(),
-        aadharNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
-        panImage: Joi.string().uri().optional(),
-        aadharFrontImage: Joi.string().uri().optional(),
-        aadharBackImage: Joi.string().uri().optional(),
-        firmName: Joi.string().max(255).optional(),
-        firmAddress: Joi.string().max(500).optional(),
-        firmType: Joi.string().valid('Proprietor', 'Partnership', 'LLP', 'Private Limited').optional(),
-        cinNumber: Joi.string().pattern(/^[A-Z0-9]{21}$/).optional(),
+        bankName: Joi.string().max(255).optional(), 
+        accountNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
+        ifscCode: Joi.string().pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/).optional(), 
+        accountHolderName: Joi.string().max(255).optional(),
     }),
 };
-
 
 const updatePartnerDetailsById = {
     params: Joi.object({

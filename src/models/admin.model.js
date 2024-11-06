@@ -119,7 +119,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
     },
     gstType: {
-      type: String, 
+      type: String,
     },
     compositonType: {
       type: String,
@@ -135,15 +135,23 @@ const adminSchema = new mongoose.Schema(
     },
     bankName: {
       type: String,
+      required: true,
+      maxlength: 255,
     },
-    accountNo: {
+    accountNumber: {
       type: String,
+      required: true,
+      match: /^[0-9]{12}$/,
     },
     ifscCode: {
       type: String,
+      required: true,
+      match: /^[A-Z]{4}0[A-Z0-9]{6}$/,
     },
     accountHolderName: {
       type: String,
+      required: true,
+      maxlength: 255,
     },
     accountType: {
       type: String,

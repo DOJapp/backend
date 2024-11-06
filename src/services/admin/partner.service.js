@@ -135,7 +135,7 @@ const createPartner = async (req) => {
         aadharFrontImage: aadharFrontImageUrl?.url,
         aadharBackImage: aadharBackImageUrl?.url,
         bankName,
-        accountNo: accountNumber,
+        accountNumber: accountNumber,
         ifscCode,
         accountHolderName,
         // documents: documentsUrls,
