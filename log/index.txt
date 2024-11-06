@@ -258,3 +258,7 @@
 2024-11-05 17:51:54 [INFO]: GET /api/v1/admin/partners
 2024-11-05 17:52:15 [INFO]: GET /api/v1/admin/partners
 2024-11-05 18:00:56 [INFO]: GET /api/v1/admin/partners
+2024-11-06 11:10:34 [INFO]: GET /api/v1/admin/get_dashboard
+2024-11-06 11:11:47 [INFO]: GET /api/v1/admin/partners
+2024-11-06 14:28:51 [INFO]: GET /api/v1/admin/get_dashboard
+2024-11-06 14:29:13 [INFO]: GET /api/v1/admin/partners

@@ -7,32 +7,108 @@ const createPartner = Joi.object({
     password: Joi.string().min(6).required(),
     phone: Joi.string().optional(),
     roleId: Joi.string().required(),
-    secondaryPhone: Joi.string().optional(), // Made optional if not required
+    secondaryPhone: Joi.string().optional(),
     aadharNo: Joi.string().required(),
     panNo: Joi.string().required(),
 });
 
 // Schema for updating an existing partner
-const updatePartner = Joi.object({
-    name: Joi.string().optional(),
-    email: Joi.string().email().optional(),
-    password: Joi.string().min(6).optional(),
-    phone: Joi.string().optional(),
-    roleId: Joi.string().optional(),
-    storeId: Joi.string().optional(),
-    secondaryPhone: Joi.string().optional(), 
-    aadharNo: Joi.string().optional(),
-    panNo: Joi.string().optional(),
-});
+const updatePartnerBasicDetailsById = {
+    params: Joi.object({
+        id: Joi.string().hex().length(24).required(),
+    }),
+    body: Joi.object({
+        name: Joi.string().max(255).optional(),
+        email: Joi.string().email().optional(),
+        phone: Joi.string().pattern(/^[0-9]{10}$/).optional(),
+        secondaryPhone: Joi.string().pattern(/^[0-9]{10}$/).optional(),
+        status: Joi.string().valid('Active', 'Blocked').optional(),
+    }),
+};
+
+const updateGstDetailsById = {
+    params: Joi.object({
+        id: Joi.string().hex().length(24).required(),
+    }),
+    body: Joi.object({
+        gst: Joi.string().valid('Yes', 'No').optional(),
+        gstNumber: Joi.string()
+            .pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
+            .optional(),
+        gstType: Joi.string().valid('Composition', 'Regular').optional(),
+        compositionType: Joi.string().valid('Inclusive', 'Exclusive').optional(),
+        cessType: Joi.string().valid('Cess', 'E-cess', 'A-cess').optional(),
+        goodsServiceType: Joi.string().valid('CGST', 'SGST', 'IGST').optional(),
+        percentage: Joi.number().min(0).max(100).optional(),
+    }),
+};
+
+const updateFirmDetailsById = {
+    params: Joi.object({
+        id: Joi.string().hex().length(24).required(),
+    }),
+    body: Joi.object({
+        panNumber: Joi.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).optional(),
+        aadharNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
+        panImage: Joi.string().optional(),
+        aadharFrontImage: Joi.string().optional(),
+        aadharBackImage: Joi.string().optional(),
+        firmName: Joi.string().max(255).optional(),
+        firmAddress: Joi.string().max(500).optional(),
+        firmType: Joi.string().valid('Proprietor', 'Partnership', 'LLP', 'Private Limited').optional(),
+        cinNumber: Joi.string().pattern(/^[A-Z0-9]{21}$/).optional(),
+    }),
+};
+
+const updateBankDetailsById = {
+    params: Joi.object({
+        id: Joi.string().hex().length(24).required(),
+    }),
+    body: Joi.object({
+        panNumber: Joi.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).optional(),
+        aadharNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
+        panImage: Joi.string().uri().optional(),
+        aadharFrontImage: Joi.string().uri().optional(),
+        aadharBackImage: Joi.string().uri().optional(),
+        firmName: Joi.string().max(255).optional(),
+        firmAddress: Joi.string().max(500).optional(),
+        firmType: Joi.string().valid('Proprietor', 'Partnership', 'LLP', 'Private Limited').optional(),
+        cinNumber: Joi.string().pattern(/^[A-Z0-9]{21}$/).optional(),
+    }),
+};
+
+
+const updatePartnerDetailsById = {
+    params: Joi.object({
+        id: Joi.string().hex().length(24).required(),
+    }),
+    body: Joi.object({
+        partners: Joi.array().items(
+            Joi.object({
+                panNumber: Joi.string().pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/).optional(),
+                panImage: Joi.string().uri().optional(),
+                aadharNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
+                aadharFrontImage: Joi.string().uri().optional(),
+                aadharBackImage: Joi.string().uri().optional(),
+                document: Joi.array().optional(),
+                bankName: Joi.string().optional(),
+                accountNumber: Joi.string().optional(),
+                ifscCode: Joi.string().optional(),
+                accountHolderName: Joi.string().optional(),
+            })
+        ).optional(),
+    }),
+};
+
 
 // Schema for fetching a partner by ID
 const getPartnerById = Joi.object({
-    id: Joi.string().required(), // Assuming ID is a string (like ObjectId)
+    id: Joi.string().required(),
 });
 
 // Schema for soft deleting a partner by ID
 const softDeletePartnerById = Joi.object({
-    id: Joi.string().required(), // Assuming ID is a string
+    id: Joi.string().required(),
 });
 
 // Schema for partner login
@@ -51,7 +127,11 @@ const changePassword = {
 
 export {
     createPartner,
-    updatePartner,
+    updatePartnerBasicDetailsById,
+    updateGstDetailsById,
+    updateFirmDetailsById,
+    updateBankDetailsById,
+    updatePartnerDetailsById,
     getPartnerById,
     softDeletePartnerById,
     partnerLogin,

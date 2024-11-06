@@ -43,33 +43,53 @@ router.post(
   PartnerController.createPartner
 );
 
-// Route to update an existing partner (PUT)
+
 router.put(
-  "/partners/:id",
+  "/partners/basic_details/:id",
+  verifyJWT,
+  validate(PartnerValidation.updatePartnerBasicDetailsById),
+  PartnerController.updatePartnerBasicDetailsById
+);
+
+
+router.put(
+  "/partners/gst_details/:id",
   verifyJWT,
   upload.fields([
     {
-      name: "avatar",
-      maxCount: 1,
-    },
-    {
-      name: "aadharFrontImage",
-      maxCount: 1,
-    },
-    {
-      name: "aadharBackImage",
-      maxCount: 1,
-    },
-    {
-      name: "panImage",
-      maxCount: 1,
+      name: "documents",
+      maxCount: 5,
     },
   ]),
-  validate(PartnerValidation.updatePartner),
-  PartnerController.updatePartnerById
+  validate(PartnerValidation.updateGstDetailsById),
+  PartnerController.updateGstDetailsById
 );
 
-// Route to soft delete a partner by ID (DELETE)
+
+router.put(
+  "/partners/firm_details/:id",
+  verifyJWT,
+  validate(PartnerValidation.updateFirmDetailsById),
+  PartnerController.updateFirmDetailsById
+);
+
+
+router.put(
+  "/partners/bank_details/:id",
+  verifyJWT,
+  validate(PartnerValidation.updateBankDetailsById),
+  PartnerController.updateBankDetailsById
+);
+
+
+router.put(
+  "/partners/partner_details/:id",
+  verifyJWT,
+  validate(PartnerValidation.updatePartnerDetailsById),
+  PartnerController.updatePartnerDetailsById
+);
+
+
 router.delete(
   "/partners/:id",
   verifyJWT,

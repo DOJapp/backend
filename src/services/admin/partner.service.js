@@ -15,14 +15,7 @@ const checkUniqueFields = async (panNumber, phone, excludeId = null) => {
         throw new ApiError(httpStatus.CONFLICT, "Pan Number is already taken");
     }
 };
-const convertBlobToFile = async (blobUrl) => {
-    const response = await fetch(blobUrl);
-    console.log("response", response);
-    const blob = await response.blob();
-    const file = new File([blob], 'uploadedFile', { type: blob.type });
-    console.log("file", file);
-    return file;
-};
+
 
 const createPartner = async (req) => {
     const {
@@ -166,94 +159,150 @@ const getAllActivePartners = async () => {
 };
 
 const getPartnerById = async (id) => {
-    const partner = await Admin.findById(id).populate("roleId");
+    const partner = await Admin.findById(id).populate("roleId").populate("adminId");
     if (!partner) {
         throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
     }
     return partner;
 };
 
-const updatePartnerById = async (
-    id,
-    data,
-    avatarLocalPath,
-    aadharFrontImageLocalPath,
-    aadharBackImageLocalPath,
-    panImageLocalPath
-) => {
-    const { name, email, phone, secondaryPhone, aadharNo, panNo, roleId } = data;
-
-    await checkUniqueFields(email, phone, id);
+const updatePartnerBasicDetailsById = async (id, data) => {
+    const { name, email, phone, secondaryPhone, status } = data;
 
     const updateData = {};
-
-    if (avatarLocalPath) {
-        const avatar = await uploadOnCloudinary(avatarLocalPath);
-        if (avatar?.url) {
-            updateData.avatar = avatar.url;
-        } else {
-            throw new ApiError(
-                httpStatus.INTERNAL_SERVER_ERROR,
-                "Error while uploading avatar"
-            );
-        }
-    }
-
-    if (aadharFrontImageLocalPath) {
-        const aadharFrontImage = await uploadOnCloudinary(
-            aadharFrontImageLocalPath
-        );
-        if (aadharFrontImage?.url) {
-            updateData.aadharFrontImage = aadharFrontImage.url;
-        } else {
-            throw new ApiError(
-                httpStatus.INTERNAL_SERVER_ERROR,
-                "Error while uploading Aadhar Front Image"
-            );
-        }
-    }
-
-    if (aadharBackImageLocalPath) {
-        const aadharBackImage = await uploadOnCloudinary(aadharBackImageLocalPath);
-        if (aadharBackImage?.url) {
-            updateData.aadharBackImage = aadharBackImage.url;
-        } else {
-            throw new ApiError(
-                httpStatus.INTERNAL_SERVER_ERROR,
-                "Error while uploading Aadhar Back Image"
-            );
-        }
-    }
-
-    if (panImageLocalPath) {
-        const panImage = await uploadOnCloudinary(panImageLocalPath);
-        if (panImage?.url) {
-            updateData.panImage = panImage.url;
-        } else {
-            throw new ApiError(
-                httpStatus.INTERNAL_SERVER_ERROR,
-                "Error while uploading Pan Image"
-            );
-        }
-    }
 
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (phone) updateData.phone = phone;
     if (secondaryPhone) updateData.secondaryPhone = secondaryPhone;
-    if (roleId) updateData.roleId = roleId;
-    if (aadharNo) updateData.aadharNo = aadharNo;
-    if (panNo) updateData.panNo = panNo;
+    if (status) updateData.status = status;
 
-    const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, {
-        new: true,
-    });
+    const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, { new: true });
+
     if (!updatedPartner) {
         throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
     }
 
     return updatedPartner;
 };
+
+const updateGstDetailsById = async (id, files, data) => {
+    const { gst, gstNumber, gstType, compositionType, cessType, goodsServiceType, percentage } = data;
+
+
+    const updateData = {};
+
+    if (gst) updateData.gst = gst;
+    if (gstNumber) updateData.gstNumber = gstNumber;
+    if (gstType) updateData.gstType = gstType;
+    if (compositionType) updateData.compositionType = compositionType;
+    if (cessType) updateData.cessType = cessType;
+    if (goodsServiceType) updateData.goodsServiceType = goodsServiceType;
+    if (percentage) updateData.percentage = percentage;
+
+    const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, { new: true });
+
+    if (!updatedPartner) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+    }
+
+    return updatedPartner;
+};
+
+const updateFirmDetailsById = async (id, data) => {
+    const { panNumber, aadharNumber, panImage, aadharFrontImage, aadharBackImage, firmName, firmAddress, firmType, cinNumber } = data;
+
+    // Upload images to Cloudinary
+    const panImageUrl = panImage ? await uploadOnCloudinary(panImage) : null;
+    const aadharFrontImageUrl = aadharFrontImage ? await uploadOnCloudinary(aadharFrontImage) : null;
+    const aadharBackImageUrl = aadharBackImage ? await uploadOnCloudinary(aadharBackImage) : null;
+
+    if (panImage && !panImageUrl?.url) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Error uploading Pan Image");
+    }
+
+    if (aadharFrontImage && !aadharFrontImageUrl?.url) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Error uploading Aadhar Front Image");
+    }
+
+    if (aadharBackImage && !aadharBackImageUrl?.url) {
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Error uploading Aadhar Back Image");
+    }
+
+    const updateData = {};
+
+    if (panNumber) updateData.panNumber = panNumber;
+    if (panImage) updateData.panImage = panImageUrl?.url;
+    if (aadharNumber) updateData.aadharNumber = aadharNumber;
+    if (aadharFrontImage) updateData.aadharFrontImage = aadharFrontImageUrl?.url;
+    if (aadharBackImage) updateData.aadharBackImage = aadharBackImageUrl?.url;
+    if (firmName) updateData.firmName = firmName;
+    if (firmAddress) updateData.firmAddress = firmAddress;
+    if (firmType) updateData.firmType = firmType;
+    if (cinNumber) updateData.cinNumber = cinNumber;
+
+    const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, { new: true });
+
+    if (!updatedPartner) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+    }
+
+    return updatedPartner;
+};
+
+const updateBankDetailsById = async (id, data) => {
+    const { bankName, accountNumber, ifscCode, accountHolderName } = data;
+
+
+    const updateData = {};
+
+    if (bankName) updateData.bankName = bankName;
+    if (accountNumber) updateData.accountNumber = accountNumber;
+    if (ifscCode) updateData.ifscCode = ifscCode;
+    if (accountHolderName) updateData.accountHolderName = accountHolderName;
+
+    const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, { new: true });
+
+    if (!updatedPartner) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+    }
+
+    return updatedPartner;
+};
+
+const updatePartnerDetailsById = async (id, data) => {
+    const { partners } = data;
+
+    const formattedPartners = await Promise.all((partners || []).map(async (partner) => {
+        const panImageUpload = partner.panImage ? await uploadOnCloudinary(partner.panImage) : null;
+        const aadharFrontImageUpload = partner.aadharFrontImage ? await uploadOnCloudinary(partner.aadharFrontImage) : null;
+        const aadharBackImageUpload = partner.aadharBackImage ? await uploadOnCloudinary(partner.aadharBackImage) : null;
+
+        return {
+            panNumber: partner.panNumber,
+            panImage: panImageUpload ? panImageUpload.url : null,
+            aadharNumber: partner.aadharNumber,
+            aadharFrontImage: aadharFrontImageUpload ? aadharFrontImageUpload.url : null,
+            aadharBackImage: aadharBackImageUpload ? aadharBackImageUpload.url : null,
+            document: partner.document || [],
+            bankName: partner.bankName,
+            accountNumber: partner.accountNumber,
+            ifscCode: partner.ifscCode,
+            accountHolderName: partner.accountHolderName,
+        };
+    }));
+
+    // Assuming you are updating the partner details in a database, 
+    // use formattedPartners and `id` to perform the update
+    const updatedPartner = await Admin.findByIdAndUpdate(id, { partners: formattedPartners }, { new: true });
+
+    if (!updatedPartner) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+    }
+
+    return updatedPartner;
+};
+
 
 const softDeletePartnerById = async (id) => {
     const partner = await Admin.findById(id);
@@ -317,7 +366,11 @@ export {
     getAllPartners,
     getAllActivePartners,
     getPartnerById,
-    updatePartnerById,
+    updatePartnerBasicDetailsById,
+    updateGstDetailsById,
+    updateFirmDetailsById,
+    updateBankDetailsById,
+    updatePartnerDetailsById,
     softDeletePartnerById,
     partnerLogin,
     partnerChangePassword,

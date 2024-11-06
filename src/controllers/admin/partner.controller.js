@@ -16,7 +16,7 @@ const getAllPartners = asyncHandler(async (req, res) => {
 });
 
 const createPartner = asyncHandler(async (req, res) => {
- 
+
   const newPartner = await PartnerService.createPartner(
     req,
   );
@@ -46,20 +46,9 @@ const getPartnerById = asyncHandler(async (req, res) => {
 });
 
 // Update a Partner by ID
-const updatePartnerById = asyncHandler(async (req, res) => {
-  const avatarLocalPath = req.files?.avatar?.[0]?.path;
-  const aadharFrontImageLocalPath = req.files?.aadharFrontImage?.[0]?.path;
-  const aadharBackImageLocalPath = req.files?.aadharBackImage?.[0]?.path;
-  const panImageLocalPath = req.files?.panImage?.[0]?.path;
+const updatePartnerBasicDetailsById = asyncHandler(async (req, res) => {
 
-  const updatedPartner = await PartnerService.updatePartnerById(
-    req.params.id,
-    req.body,
-    avatarLocalPath,
-    aadharFrontImageLocalPath,
-    aadharBackImageLocalPath,
-    panImageLocalPath
-  );
+  const updatedPartner = await PartnerService.updatePartnerBasicDetailsById(req.params.id, req.body);
 
   if (!updatedPartner) {
     throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
@@ -68,9 +57,64 @@ const updatePartnerById = asyncHandler(async (req, res) => {
   return res
     .status(httpStatus.OK)
     .json(
-      new ApiResponse(httpStatus.OK, updatedPartner, "Partner updated successfully")
+      new ApiResponse(httpStatus.OK, updatedPartner, "Basic Details updated successfully")
     );
 });
+
+const updateGstDetailsById = asyncHandler(async (req, res) => {
+  const updatedPartner = await PartnerService.updateGstDetailsById(req.params.id, req.files, req.body);
+
+  if (!updatedPartner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+  }
+
+  return res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, updatedPartner, "Gst Details updated successfully")
+    );
+});
+
+const updateFirmDetailsById = asyncHandler(async (req, res) => {
+  const updatedPartner = await PartnerService.updateFirmDetailsById(req.params.id, req.body);
+
+  if (!updatedPartner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+  }
+
+  return res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, updatedPartner, "Firm Details updated successfully")
+    );
+});
+
+const updateBankDetailsById = asyncHandler(async (req, res) => {
+  const updatedPartner = await PartnerService.updateBankDetailsById(req.params.id, req.body);
+
+  if (!updatedPartner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+  }
+
+  return res
+    .status(httpStatus.OK)
+    .json(
+      new ApiResponse(httpStatus.OK, updatedPartner, "Bank Details updated successfully")
+    );
+});
+
+const updatePartnerDetailsById = asyncHandler(async (req, res) => {
+  const updatedPartner = await PartnerService.updatePartnerDetailsById(req.params.id, req.body);
+
+  if (!updatedPartner) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
+  }
+
+  return res
+    .status(httpStatus.OK)
+    .json(new ApiResponse(httpStatus.OK, updatedPartner, "Partner details updated successfully"));
+});
+
 
 // Soft delete a Partner by ID (logical deletion)
 const softDeletePartnerById = asyncHandler(async (req, res) => {
@@ -143,7 +187,11 @@ export {
   createPartner,
   getAllPartners,
   getPartnerById,
-  updatePartnerById,
+  updatePartnerBasicDetailsById,
+  updateGstDetailsById,
+  updateFirmDetailsById,
+  updateBankDetailsById,
+  updatePartnerDetailsById,
   softDeletePartnerById,
   partnerLogin,
   partnerLogout,
