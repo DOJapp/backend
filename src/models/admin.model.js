@@ -6,31 +6,40 @@ import bcrypt from "bcrypt";
 const partnerDetailsSchema = new mongoose.Schema({
   panNumber: {
     type: String,
+    default: ""
   },
   panImage: {
     type: String,
+    default: ""
   },
   aadharNumber: {
     type: String,
+    default: ""
   },
   aadharFrontImage: {
     type: String,
+    default: ""
   },
   aadharBackImage: {
     type: String,
+    default: ""
   },
   document: [String],
   bankName: {
     type: String,
+    default: ""
   },
   accountNumber: {
     type: String,
+    default: ""
   },
   ifscCode: {
     type: String,
+    default: ""
   },
   accountHolderName: {
     type: String,
+    default: ""
   },
 });
 
@@ -40,31 +49,28 @@ const adminSchema = new mongoose.Schema(
     name: {
       type: String,
       required: false,
+      default: ""
     },
     email: {
       type: String,
       required: false,
+      default: "",
       trim: true,
       lowercase: true,
     },
     password: {
       type: String,
       required: false,
+      default: ""
     },
     phone: {
-      type: String,
+      type: Number,
       required: false,
-      validate: {
-        validator: (value) => /^\d{10}$/.test(value),
-        message: "Invalid mobile number",
-      },
+      default: "",
     },
     secondaryPhone: {
-      type: String,
-      validate: {
-        validator: (value) => /^\d{10}$/.test(value),
-        message: "Invalid secondary mobile number",
-      },
+      type: Number,
+      default: "",
     },
     roleId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -91,57 +97,71 @@ const adminSchema = new mongoose.Schema(
     },
     panNumber: {
       type: String,
+      default: "",
       minlength: [10, 'PAN Number must be exactly 10 characters'],
       maxlength: [10, 'PAN Number must be exactly 10 characters'],
     },
     panImage: {
       type: String,
+      default: ""
     },
     aadharNumber: {
       type: String,
+      default: ""
     },
     aadharFrontImage: {
       type: String,
+      default: ""
     },
     aadharBackImage: {
       type: String,
+      default: ""
     },
     firmName: {
       type: String,
+      default: ""
     },
     gstNumber: {
       type: String,
+      default: ""
     },
     cinNumber: {
       type: String,
+      default: ""
     },
     firmAddress: {
       type: String,
+      default: ""
     },
     gstType: {
       type: String,
+      default: ""
     },
-    compositonType: {
+    compositionType: {
       type: String,
+      default: ""
     },
     cessType: {
       type: String,
+      default: ""
     },
     goodsServiceType: {
       type: String,
+      default: ""
     },
     percentage: {
       type: String,
+      default: ""
     },
     bankName: {
       type: String,
       required: true,
       maxlength: 255,
+      default: ""
     },
     accountNumber: {
-      type: String,
+      type: Number,
       required: true,
-      match: /^[0-9]{12}$/,
     },
     ifscCode: {
       type: String,
@@ -155,6 +175,7 @@ const adminSchema = new mongoose.Schema(
     },
     accountType: {
       type: String,
+      default: ""
     },
     documents: [String],
     firmType: {

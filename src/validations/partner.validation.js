@@ -67,7 +67,7 @@ const updateBankDetailsById = {
     }),
     body: Joi.object({
         bankName: Joi.string().max(255).optional(), 
-        accountNumber: Joi.string().pattern(/^[0-9]{12}$/).optional(),
+        accountNumber: Joi.string().pattern(/^[0-9]{12,16}$/).optional(),
         ifscCode: Joi.string().pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/).optional(), 
         accountHolderName: Joi.string().max(255).optional(),
     }),

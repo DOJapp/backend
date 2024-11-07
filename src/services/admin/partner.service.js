@@ -23,7 +23,7 @@ const createPartner = async (req) => {
         gstNumber,
         firmType,
         gstType,
-        compositonType,
+        compositionType,
         cessType,
         goodsServiceType,
         percentage,
@@ -124,7 +124,7 @@ const createPartner = async (req) => {
         gstNumber: gstSelected === "Yes" ? gstNumber : null,
         firmType: gstSelected === "Yes" ? firmType : null,
         gstType,
-        compositonType,
+        compositionType,
         cessType,
         goodsServiceType,
         percentage,
@@ -159,7 +159,8 @@ const getAllActivePartners = async () => {
 };
 
 const getPartnerById = async (id) => {
-    const partner = await Admin.findById(id).populate("roleId").populate("adminId");
+    console.log(id);
+    const partner = await Admin.findById(id).populate("roleId");
     if (!partner) {
         throw new ApiError(httpStatus.NOT_FOUND, "Partner not found");
     }
@@ -187,6 +188,7 @@ const updatePartnerBasicDetailsById = async (id, data) => {
 };
 
 const updateGstDetailsById = async (id, files, data) => {
+    console.log(files);
     const { gst, gstNumber, gstType, compositionType, cessType, goodsServiceType, percentage } = data;
 
 

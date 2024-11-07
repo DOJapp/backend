@@ -62,6 +62,8 @@ const updatePartnerBasicDetailsById = asyncHandler(async (req, res) => {
 });
 
 const updateGstDetailsById = asyncHandler(async (req, res) => {
+  console.log("Body", req.body);
+  console.log("file", req.files);
   const updatedPartner = await PartnerService.updateGstDetailsById(req.params.id, req.files, req.body);
 
   if (!updatedPartner) {

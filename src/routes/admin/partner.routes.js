@@ -61,7 +61,7 @@ router.put(
       maxCount: 5,
     },
   ]),
-  validate(PartnerValidation.updateGstDetailsById),
+  // validate(PartnerValidation.updateGstDetailsById),
   PartnerController.updateGstDetailsById
 );
 
