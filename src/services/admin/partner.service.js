@@ -188,7 +188,7 @@ const updatePartnerBasicDetailsById = async (id, data) => {
 };
 
 const updateGstDetailsById = async (id, files, data) => {
-    console.log(files);
+    console.log(data);
     const { gst, gstNumber, gstType, compositionType, cessType, goodsServiceType, percentage } = data;
 
 
@@ -202,6 +202,21 @@ const updateGstDetailsById = async (id, files, data) => {
     if (goodsServiceType) updateData.goodsServiceType = goodsServiceType;
     if (percentage) updateData.percentage = percentage;
 
+
+
+    if (files.documents && files.documents.length > 0) {
+        const uploadedFiles = await Promise.all(
+            files.documents.map(file => uploadOnCloudinary(file.path))
+        );
+
+        const uploadedFilesUrls = uploadedFiles
+            .map(file => file ? file.secure_url : null)
+            .filter(url => url !== null);
+
+        updateData.documents = uploadedFilesUrls;
+    }
+
+
     const updatedPartner = await Admin.findByIdAndUpdate(id, updateData, { new: true });
 
     if (!updatedPartner) {
@@ -212,8 +227,8 @@ const updateGstDetailsById = async (id, files, data) => {
 };
 
 const updateFirmDetailsById = async (id, data) => {
-    const { panNumber, aadharNumber, panImage, aadharFrontImage, aadharBackImage, firmName, firmAddress, firmType, cinNumber } = data;
 
+    const { panNumber, aadharNumber, panImage, aadharFrontImage, aadharBackImage, firmName, firmAddress, firmType, cinNumber } = data;
     // Upload images to Cloudinary
     const panImageUrl = panImage ? await uploadOnCloudinary(panImage) : null;
     const aadharFrontImageUrl = aadharFrontImage ? await uploadOnCloudinary(aadharFrontImage) : null;
@@ -274,7 +289,6 @@ const updateBankDetailsById = async (id, data) => {
 
 const updatePartnerDetailsById = async (id, data) => {
     const { partners } = data;
-
     const formattedPartners = await Promise.all((partners || []).map(async (partner) => {
         const panImageUpload = partner.panImage ? await uploadOnCloudinary(partner.panImage) : null;
         const aadharFrontImageUpload = partner.aadharFrontImage ? await uploadOnCloudinary(partner.aadharFrontImage) : null;
