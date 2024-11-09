@@ -40,32 +40,26 @@ const createProduct = async (req, avatarLocalPath) => {
     price,
     discount: discount || 0,
     status,
-    adminId:addedBy,
+    adminId: addedBy,
     image: avatar ? avatar.url : null,
   };
 
-  // Create a new product using the processed data
   const newProduct = new Product(productData);
 
-  // Save the new product to the database
   return await newProduct.save();
 };
 
-// Function to fetch all products (excluding deleted)
 const getAllProducts = async () => {
-  return await Product.find().populate("categoryId").populate("adminId"); // Middleware filters deleted products if set
+  return await Product.find().populate("categoryId").populate("adminId").sort({ createdAt: -1 });
 };
 
-// Function to fetch all active products (excluding deleted or blocked)
 const getAllActiveProducts = async () => {
-  return await Product.find({ status: "Active" }).populate("categoryId"); // Fetches only active products
+  return await Product.find({ status: "Active" }).populate("categoryId").sort({ createdAt: -1 });
 };
 
-// Function to fetch a product by ID (excluding deleted)
 const getProductById = async (id) => {
-  const product = await Product.findById(id); // Middleware filters deleted products if set
+  const product = await Product.findById(id);
 
-  // Check if product exists
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
   }

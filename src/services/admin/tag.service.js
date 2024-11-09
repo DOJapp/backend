@@ -6,7 +6,6 @@ import httpStatus from "http-status";
 const createTag = async (data) => {
   const { title, status } = data;
 
-
   // Validate required fields
   if (!title) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Title is required.");
@@ -15,7 +14,8 @@ const createTag = async (data) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Status is required.");
   }
 
-  const existingTag = await Tag.find({ title:title });
+  // Check if tag already exists
+  const existingTag = await Tag.findOne({ title: title });
 
   if (existingTag) {
     throw new ApiError(httpStatus.CONFLICT, "Tag already exists.");
@@ -33,6 +33,7 @@ const createTag = async (data) => {
   // Save the Tag to the database
   return await newTag.save();
 };
+
 
 // Function to fetch all tags (including soft-deleted)
 const getAllTags = async () => {

@@ -6,7 +6,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 
 //  creating a new banner
 const createBanner = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;  // Get the path of the uploaded file
+    const avatarLocalPath = req.file?.path;  
 
     // Check if avatar file exists
     if (!avatarLocalPath) {

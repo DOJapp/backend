@@ -25,9 +25,17 @@ const createProduct = asyncHandler(async (req, res) => {
     );
 });
 
-// Fetch all active products
+// Fetch all  products
 const getAllProducts = asyncHandler(async (req, res) => {
     const products = await ProductService.getAllProducts();
+
+    return res.status(httpStatus.OK).json(
+        new ApiResponse(httpStatus.OK, products, "Products fetched successfully")
+    );
+});
+// Fetch all active products
+const getAllActiveProducts = asyncHandler(async (req, res) => {
+    const products = await ProductService.getAllActiveProducts();
 
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, products, "Products fetched successfully")
@@ -82,6 +90,7 @@ const softDeleteProductById = asyncHandler(async (req, res) => {
 export {
     createProduct,
     getAllProducts,
+    getAllActiveProducts,
     getProductById,
     updateProductById,
     softDeleteProductById

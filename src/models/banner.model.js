@@ -11,17 +11,21 @@ const bannerSchema = new Schema(
     storeId: {
       type: Schema.Types.ObjectId,
       ref: 'Store',
-      required: false, // Optional field
+      default: "null",
+    },
+    redirectTo: {
+      type: String,
+      required: true
     },
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
-      required: false, // Optional field
+      default: "null",
     },
     status: {
       type: String,
       enum: ['Active', 'Blocked'],
-      required: true, // 'Active' or 'Blocked' must be provided
+      required: true,
     },
     isDeleted: {
       type: Boolean,

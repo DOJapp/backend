@@ -8,7 +8,10 @@ import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensur
 const router = Router();
 
 // Route to fetch all products
-router.get("/products", verifyJWT, productController.getAllProducts); // Changed "/product" to "/products"
+router.get("/products", verifyJWT, productController.getAllProducts); 
+
+// Route to fetch all Active products
+router.get("/active_products", verifyJWT, productController.getAllActiveProducts); 
 
 // Route to fetch a single product by ID
 router.get("/products/:id", verifyJWT, validate(productValidation.getProductById), productController.getProductById); // Changed getBannerById to getProductById
