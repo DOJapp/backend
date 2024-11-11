@@ -7,18 +7,18 @@ import { clearCacheByKey } from '../../utils/cache.js';
 
 // Create a new product
 const createProduct = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path; // Get the path of the uploaded file (if any)
 
-    // Check if the image file exists
-    if (!avatarLocalPath) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Image file is missing");
-    }
+    // console.log("body", req.body);
+    // const avatarLocalPath =req.files?.image[0]?.path;
+    // console.log("avatarLocalPath", avatarLocalPath);
 
-    // Create the product with form data and image
-    const newProduct = await ProductService.createProduct(req, avatarLocalPath); // Make sure to pass req.body
+    // if (!avatarLocalPath) {
+    //     throw new ApiError(httpStatus.BAD_REQUEST, "Image file is missing");
+    // }
 
-    // Clear the product cache after creating a new product
-    clearCacheByKey('products'); // Use cache utility to clear cache
+    const newProduct = await ProductService.createProduct(req, req.files);
+
+    clearCacheByKey('products');
 
     return res.status(httpStatus.CREATED).json(
         new ApiResponse(httpStatus.CREATED, newProduct, "Product created successfully")
@@ -57,10 +57,9 @@ const getProductById = asyncHandler(async (req, res) => {
 
 // Update a product by ID
 const updateProductById = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path; // Get the path of the uploaded file (if any)
 
     // Update the product with form data and image (if provided)
-    const updatedProduct = await ProductService.updateProductById(req.params.id, req.body, avatarLocalPath);
+    const updatedProduct = await ProductService.updateProductById(req.params.id, req.body, req.files);
 
     if (!updatedProduct) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');

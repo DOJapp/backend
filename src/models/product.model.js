@@ -30,6 +30,7 @@ const productsSchema = new Schema(
             type: String,
             required: true,
         },
+        galleryImages:[String],
         price: {
             type: Number,
             default: 0,

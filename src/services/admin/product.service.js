@@ -3,8 +3,7 @@ import { uploadOnCloudinary } from "../../utils/cloudinary.js";
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from "http-status";
 
-// Function to create a new Product
-const createProduct = async (req, avatarLocalPath) => {
+const createProduct = async (req, files) => {
   const {
     name,
     description,
@@ -15,22 +14,32 @@ const createProduct = async (req, avatarLocalPath) => {
     discount,
     status,
   } = req.body;
+
   const addedBy = req?.admin?._id;
 
-  // Upload the avatar to Cloudinary using the local file path
-  const avatar = avatarLocalPath
-    ? await uploadOnCloudinary(avatarLocalPath)
-    : null;
+  const avatarLocalPath = files?.image ? files.image[0]?.path : null;
+  const galleryImagePaths = files?.galleryImages ? files.galleryImages.map(file => file.path) : [];
 
-  // Check if the Cloudinary upload was successful if an image was provided
-  if (avatarLocalPath && !avatar.url) {
+  const avatarUrl = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : null;
+  const galleryUrls = await Promise.all(
+    galleryImagePaths.map(path => uploadOnCloudinary(path))
+  );
+
+  if (avatarLocalPath && !avatarUrl) {
     throw new ApiError(
       httpStatus.INTERNAL_SERVER_ERROR,
-      "Error while uploading avatar"
+      "Error while uploading the main image"
     );
   }
 
-  // Prepare product data with Cloudinary URL if available
+  if (galleryImagePaths.length && galleryUrls.some(url => !url)) {
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      "Error while uploading gallery images"
+    );
+  }
+  const galleryImageUrls = galleryUrls.map(url => url.url);
+
   const productData = {
     name,
     description,
@@ -41,13 +50,14 @@ const createProduct = async (req, avatarLocalPath) => {
     discount: discount || 0,
     status,
     adminId: addedBy,
-    image: avatar ? avatar.url : null,
+    image: avatarUrl?.url || null,
+    galleryImages: galleryImageUrls,
   };
 
   const newProduct = new Product(productData);
-
   return await newProduct.save();
 };
+
 
 const getAllProducts = async () => {
   return await Product.find().populate("categoryId").populate("adminId").sort({ createdAt: -1 });
@@ -67,8 +77,8 @@ const getProductById = async (id) => {
   return product;
 };
 
-// Function to update a product by ID
-const updateProductById = async (id, data, avatarLocalPath) => {
+
+const updateProductById = async (id, data, files) => {
   const {
     name,
     description,
@@ -79,13 +89,14 @@ const updateProductById = async (id, data, avatarLocalPath) => {
     discount,
     status,
   } = data;
-  const updateData = {}; // Initialize an empty object for the fields to be updated
 
-  // Check if avatarLocalPath exists, then upload the new image and update the image URL
+  const updateData = {};
+
+  const avatarLocalPath = files?.image ? files.image[0]?.path : null;
   if (avatarLocalPath) {
     const avatar = await uploadOnCloudinary(avatarLocalPath);
     if (avatar?.url) {
-      updateData.image = avatar.url; // Add the new avatar URL to updateData
+      updateData.image = avatar.url;
     } else {
       throw new ApiError(
         httpStatus.INTERNAL_SERVER_ERROR,
@@ -94,7 +105,22 @@ const updateProductById = async (id, data, avatarLocalPath) => {
     }
   }
 
-  // Update all other fields if they are provided in the request data
+  const galleryImagePaths = files?.galleryImages ? files.galleryImages.map(file => file.path) : [];
+  if (galleryImagePaths.length) {
+    const galleryUrls = await Promise.all(
+      galleryImagePaths.map(path => uploadOnCloudinary(path))
+    );
+
+    if (galleryUrls.some(url => !url)) {
+      throw new ApiError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Error while uploading gallery images"
+      );
+    }
+
+    updateData.galleryImages = galleryUrls.map(url => url.url);
+  }
+
   if (name) updateData.name = name;
   if (description) updateData.description = description;
   if (categoryId) updateData.categoryId = categoryId;
@@ -104,18 +130,17 @@ const updateProductById = async (id, data, avatarLocalPath) => {
   if (discount !== undefined) updateData.discount = discount;
   if (status) updateData.status = status;
 
-  // Update the product with the new data
   const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
     new: true,
   });
 
-  // Check if the product exists and was updated
   if (!updatedProduct) {
     throw new ApiError(httpStatus.NOT_FOUND, "Product not found");
   }
 
-  return updatedProduct; // Return the updated document
+  return updatedProduct;
 };
+
 
 // Function to soft delete a product by ID
 const softDeleteProductById = async (id) => {

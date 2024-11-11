@@ -34,7 +34,7 @@ const bannerSchema = new Schema(
   },
   {
     collection: 'Banner',
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true, 
   }
 );
 
