@@ -68,24 +68,18 @@ const createPartner = async (req) => {
     const aadharBackImageUrl = aadharBackImage ? await uploadOnCloudinary(aadharBackImage) : null;
 
     // Upload documents to Cloudinary
-    // let documentsUrls = [];
-    // if (documentImages && Array.isArray(documentImages)) {
-    //     for (const documentPath of documentImages) {
-    //         try {
-    //             const file = await convertBlobToFile(documentPath);
-    //             const uploadedDocument = await uploadOnCloudinary(file);
-    //             if (uploadedDocument?.url) {
-    //                 documentsUrls.push(uploadedDocument.url);
-    //             } else {
-    //                 throw new Error('Invalid document upload response');
-    //             }
-    //         } catch (error) {
-    //             console.error("Error during document upload:", error);
-    //             throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Error uploading document: ${documentPath}`);
-    //         }
-    //     }
-    // }
-
+    let documentsUrls = [];
+    if (documentImages && Array.isArray(documentImages)) {
+        for (const documentPath of documentImages) {
+            try {
+               const documentUrl= await uploadOnCloudinary(documentPath);
+               documentsUrls.push(documentUrl?.url);
+            } catch (error) {
+                console.error("Error during document upload:", error);
+                throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `Error uploading document: ${documentPath}`);
+            }
+        }
+    }
     // Ensure uploads were successful
     if (panImageUrl && !panImageUrl?.url)
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Error uploading Pan Image");
@@ -114,11 +108,10 @@ const createPartner = async (req) => {
         };
     }));
 
-    console.log("formattedPartners", formattedPartners)
     // Construct main partner data
     const partnerData = {
         gst: gstSelected,
-        roleId: "671cb0fe0baa23adbb0a1305", // Example role ID
+        roleId: "671cb0fe0baa23adbb0a1305",
         firmName,
         firmAddress,
         gstNumber: gstSelected === "Yes" ? gstNumber : null,
@@ -138,7 +131,7 @@ const createPartner = async (req) => {
         accountNumber: accountNumber,
         ifscCode,
         accountHolderName,
-        // documents: documentsUrls,
+        documents: documentsUrls || [],
         partners: formattedPartners,
     };
 
@@ -225,6 +218,7 @@ const updateGstDetailsById = async (id, files, data) => {
 
     return updatedPartner;
 };
+
 
 const updateFirmDetailsById = async (id, data) => {
 

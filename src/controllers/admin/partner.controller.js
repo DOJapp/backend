@@ -17,9 +17,11 @@ const getAllPartners = asyncHandler(async (req, res) => {
 
 const createPartner = asyncHandler(async (req, res) => {
 
+ 
   const newPartner = await PartnerService.createPartner(
     req,
   );
+
 
   return res
     .status(httpStatus.CREATED)

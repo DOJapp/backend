@@ -10,6 +10,7 @@ const createPartner = Joi.object({
     secondaryPhone: Joi.string().optional(),
     aadharNo: Joi.string().required(),
     panNo: Joi.string().required(),
+    documentImages: Joi.array().items(Joi.string()).optional()
 });
 
 // Schema for updating an existing partner
