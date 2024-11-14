@@ -1,6 +1,11 @@
 # Use the official Node.js image
 FROM node:latest
 
+
+# Set the working directory inside the container
+WORKDIR /app
+
+
 # Set the working directory inside the container to /usr/src/app/src
 COPY . .
 
