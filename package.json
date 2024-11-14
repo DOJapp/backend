@@ -12,7 +12,7 @@
     "javascript",
     "doj"
   ],
-  "author": "",
+  "author": "", 
   "license": "ISC",
   "devDependencies": {
     "dotenv": "^16.4.5",
