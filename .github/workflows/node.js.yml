@@ -11,11 +11,10 @@ jobs:
     strategy:
       matrix:
         node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    env:  # Global environment variables
+    env:
       PORT: 8000
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}  # Referencing GitHub Secrets for sensitive data
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
       CORS_ORIGIN: "*"
       ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
       ACCESS_TOKEN_EXPIRY: 2d
@@ -34,15 +33,23 @@ jobs:
       WHATSAPP_API_KEY: ${{ secrets.WHATSAPP_API_KEY }}
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - run: npm ci
+    - name: Install dependencies with npm ci
+      run: npm ci
+
+    - name: Verify MongoDB URI (for debugging)
+      run: echo "MONGODB_URI is $MONGODB_URI"
+
+    - name: Install PM2 globally
+      run: npm install -g pm2
 
     - name: Restart Backend with PM2
-      run: pm2 restart src/index.js
+      run: pm2 restart Backend
