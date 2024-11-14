@@ -45,9 +45,7 @@ app.use((err, req, res, next) => {
 // Mount the user routes at /api/v1
 app.use("/api/v1/users", userRouter);
 
-app.use('api/v1/test/test',()=>{
-    console.log("hello");
-})
+
 // Mount the user routes at /api/v1
 app.use("/api/v1/store", storeRouter);
 

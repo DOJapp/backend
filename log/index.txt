@@ -2661,3 +2661,14 @@
 2024-11-14 10:04:59 [INFO]: GET /api/v1/admin/products
 2024-11-14 10:05:02 [INFO]: GET /api/v1/admin/category
 2024-11-14 10:05:02 [INFO]: GET /api/v1/admin/products/6733167a64028810eb5c70fe
+2024-11-14 12:01:26 [INFO]: GET /api/v1/admin/admin
+2024-11-14 12:01:42 [INFO]: GET /api/v1/admin/partners
+2024-11-14 12:30:36 [INFO]: POST /api/v1/test/test
+2024-11-14 12:30:48 [INFO]: GET /api/v1/test/test
+2024-11-14 12:31:10 [INFO]: GET /api/v1/test/test
+2024-11-14 12:31:13 [INFO]: GET /api/v1/test/test
+2024-11-14 12:32:26 [INFO]: GET /api/v1/test/test
+2024-11-14 18:03:57 [INFO]: GET /api/v1/test/test
+2024-11-14 18:04:15 [INFO]: GET /api/v1/test/test
+2024-11-14 18:05:05 [INFO]: GET /api/v1/test/test
+2024-11-14 18:06:26 [INFO]: GET /api/v1/users/products
