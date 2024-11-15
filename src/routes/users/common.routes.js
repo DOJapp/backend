@@ -8,7 +8,7 @@ import { upload } from "../../middlewares/multer.middleware.js"; // Imported but
 const router = Router();
 
 // Route for user registration
-router.get("/banner", verifyJWT, commonController.getAllBanners);
+router.get("/banner",  commonController.getAllBanners);
 router.get("/category", verifyJWT, commonController.getAllCategory);
 router.get("/privacy_policy", verifyJWT, commonController.getPrivacyPolicy);
 router.get("/term_condition", verifyJWT, commonController.getTermCondition);
