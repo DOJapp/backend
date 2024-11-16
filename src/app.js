@@ -11,18 +11,11 @@ const app = express();
 
 app.use(helmet());
 
-// app.use(cors({
-//     origin: process.env.CORS_ORIGIN,
-//     credentials: true
-// }));
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
 
-app.use(
-  cors({
-    origin: "https://frontend-one-navy-20.vercel.app/",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
