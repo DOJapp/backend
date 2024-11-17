@@ -11,23 +11,14 @@ const app = express();
 
 app.use(helmet());
 
-// app.use(cors({
-//     origin: process.env.CORS_ORIGIN,
-//     credentials: true
-// }));
-
-app.use(
-  cors({
-    origin: [
-      "https://frontend-steel-omega-43.vercel.app",
-      "http://localhost:3000",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}));
 
 
-app.use(express.json({ limit: "50mb" }));
+
+app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // app.use(express.json({ limit: "16kb" }));
